@@ -1,0 +1,148 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ROTA.VISION</title>
+    <link rel="stylesheet" href="stile.css">
+</head>
+<body>
+    <div class="background-image">
+        <h1>ROTA.VISON, LA TUA PIATTAFORMA DI STREAMING ONLINE</h1>
+        <div class="center-text">
+            <p style="color:orange;">Benvenuto a ROTA.VISION l'unica piataforma che sceglie il film adatto a te, in base alle TUE esigenze
+            <br>Inserisci il tempo a tua disposizione e il genere che hai voglia di vedere e il gioco è fatto!</p>
+        </div>
+        <div id="container">
+            <div id="tabs">
+                <p id="lt" class="tabs" onclick="loginTabFun()">Log in</p>
+                <p id="rt" class="tabs" onclick="regTabFun()">Register</p>
+
+                <div id="clear"></div>
+            </div>
+
+            <div id="cont">
+                <div id="login" class="comm">
+                    <h3>Sign in</h3>
+
+                    <input id="se" type="email" placeholder="Email" required/>
+                    <input id="sp" type="password" placeholder="Password" required/>
+                    <input type="submit" onclick="login()" value="Submit"/>
+
+                    <p onclick="forTabFun()">Forget Password?</p>
+                </div>
+                <div id="register" class="comm">
+                    <h3>Register</h3>
+
+                    <input id="re" type="email" placeholder="Email" required/>
+                    <input id="rp" type="password" placeholder="Password" required/>
+                    <input id="rrp" type="password" placeholder="Re write Password" required/>
+                    <input type="submit" onclick="register()" value="Submit"/>
+
+                </div >
+                <div id="forgot" class="comm">
+                <h3>Forgot Password</h3>
+                <div>
+                    <input id="fe" type="email" placeholder="Email" required/>
+                    <input type="submit" onclick="forgot()" value="Submit"/>
+                </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <section id="ricerca">
+        <h2 id="titolo-principale">TROVA LA TUA SERIE PREFERITA</h2>
+        <p>Inserisci nella form sottostante il genere e la durata del film desiderato .
+            <br>Buona visione</p>
+    </form>
+    </section>
+    <h6> </h6>
+    <form id="filtri">
+        <label style="color: gold;" for="min">
+            Minima durata: <input type="number" name="min" value="110">
+        </label>
+        <label style="color: gold;" for="max" id="filtri">
+            Massima durata: <input type="number" name="max" value="130">
+        </label>
+        <label style="color: gold;" for="categoria">
+            Categoria:
+            <select name="categoria" id="categories"></select>
+        </label>
+
+        <input type="submit" value="cerca">
+    </form>
+    <h5> </h5>
+    <h2>Risultati</h2>
+    <table id="tabella"></table>
+<script>
+    const form = document.getElementById('filtri')
+    const tabella = document.getElementById('tabella')
+    const categorieSelect = document.getElementById('categories')
+
+
+    form.addEventListener('submit', e => {
+        console.log('premuto')
+        e.preventDefault()
+
+        const min = form["min"].value
+        const max = form["max"].value
+        const categoria=form["categories"].value
+        
+    
+        const urlRichiesta = `http://localhost:8080/film?min=${min}&max=${max}&categoria=${categoria}`
+        fetch(urlRichiesta)
+            .then(res => res.json())
+            .then(res => {
+                console.log("ottenuto risposta")
+                console.log({ res })
+                
+                for (const film of res) {
+                    console.log({ film })
+                    const riga = document.createElement('tr')
+
+                    const titolo = document.createElement('td')
+                    titolo.textContent = film.name
+                    
+                    const anno = document.createElement('td')
+                    anno.textContent = film.year
+
+                    const categoria = document.createElement('td')
+                    categoria.textContent = film.categories
+                    
+
+                    riga.appendChild(titolo)
+                    riga.appendChild(anno)
+                    riga.appendChild(categoria)
+                    tabella.appendChild(riga)
+
+
+                    console.log({ riga })
+                }
+            })
+       
+    })
+    const urlRichiesta1 = `http://localhost:8080/categories`
+    fetch(urlRichiesta1)
+            .then(res => res.json())
+            .then(res => {
+                console.log("ottenuto risposta")
+                console.log({ res })
+                
+                for (const genere of res) {
+                    console.log({ genere })
+
+                    const categoria = document.createElement('option')
+                    categoria.textContent = genere
+                    categoria.value=genere
+                    
+                    categorieSelect.appendChild(categoria)
+                    console.log({ categoria })
+                }
+               })
+</script>
+<script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.10.2/dist/umd/popper.min.js" integrity="sha384-7+zCNj/IqJ95wo16oMtfsKbZ9ccEh31eOz1HGyDuCQ6wgnyJNSYdrPa03rtR1zdB" crossorigin="anonymous"></script>
+<script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.min.js" integrity="sha384-QJHtvGhmr9XOIpI6YVutG+2QOK9T+ZnN4kzFN1RtK3zEFEIsxhlmWl5/YESvpZ13" crossorigin="anonymous"></script>
+</body>
+<script src="index.js"></script>
+</html>
